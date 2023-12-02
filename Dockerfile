@@ -14,4 +14,4 @@ EXPOSE 8080
 ENV JAVA_OPTS=""
 
 # Run the JAR file
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar messenger-app.jar"]
+ENTRYPOINT ["sh", "-c", "java -jar messenger-app.jar"]
