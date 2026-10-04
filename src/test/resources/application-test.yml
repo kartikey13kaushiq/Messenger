@@ -1,0 +1,6 @@
+app:
+  jwt:
+    secret: test-secret-test-secret-test-secret-0123456789
+logging:
+  level:
+    org.springframework.web.socket: warn

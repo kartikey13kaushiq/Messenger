@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: messenger
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/messenger}
+    username: ${DATABASE_USERNAME:messenger}
+    password: ${DATABASE_PASSWORD:messenger}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  mvc:
+    problemdetails:
+      enabled: true
+  threads:
+    virtual:
+      enabled: true
+server:
+  forward-headers-strategy: framework
+  shutdown: graceful
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    ttl: ${JWT_TTL:PT12H}
+  websocket:
+    allowed-origins: ${WS_ALLOWED_ORIGINS:*}
+  messages:
+    edit-window: PT15M
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

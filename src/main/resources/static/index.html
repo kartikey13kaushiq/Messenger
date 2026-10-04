@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Messenger</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <main id="auth" class="auth" hidden>
+    <form id="auth-form" class="card" autocomplete="on">
+      <h1>Messenger</h1>
+      <p class="muted" id="auth-subtitle">Sign in to continue</p>
+      <label>Username <input id="username" name="username" required minlength="3" maxlength="32" autocomplete="username"></label>
+      <label id="display-name-row" hidden>Display name <input id="display-name" maxlength="80" autocomplete="name"></label>
+      <label>Password <input id="password" type="password" required minlength="8" maxlength="72" autocomplete="current-password"></label>
+      <p class="error" id="auth-error" role="alert"></p>
+      <button type="submit" id="auth-submit">Sign in</button>
+      <button type="button" class="link" id="auth-toggle">Create an account</button>
+    </form>
+  </main>
+
+  <div id="app" class="app" hidden>
+    <aside class="sidebar">
+      <header class="me">
+        <div>
+          <strong id="me-name"></strong>
+          <span class="muted" id="me-username"></span>
+        </div>
+        <span class="status" id="connection" title="Real-time connection"></span>
+        <button type="button" class="link" id="logout">Sign out</button>
+      </header>
+      <div class="search">
+        <input id="people-search" type="search" placeholder="Find people to message" aria-label="Find people">
+        <ul id="people-results" class="results"></ul>
+      </div>
+      <button type="button" id="new-group" class="secondary">New group</button>
+      <ul id="conversations" class="conversations" aria-label="Conversations"></ul>
+    </aside>
+
+    <section class="chat" id="chat">
+      <div class="empty" id="empty">Pick a conversation or find someone to message.</div>
+      <header class="chat-header" id="chat-header" hidden>
+        <div>
+          <h2 id="chat-title"></h2>
+          <span class="muted" id="chat-members"></span>
+        </div>
+        <div class="chat-actions">
+          <button type="button" class="link" id="add-member" hidden>Add member</button>
+          <button type="button" class="link" id="leave" hidden>Leave</button>
+        </div>
+      </header>
+      <ol class="messages" id="messages" aria-live="polite"></ol>
+      <div class="typing muted" id="typing"></div>
+      <form class="composer" id="composer" hidden>
+        <textarea id="message-input" rows="1" maxlength="4000" placeholder="Write a message" aria-label="Message"></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </div>
+
+  <script src="vendor/stomp.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

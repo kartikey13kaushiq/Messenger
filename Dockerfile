@@ -1,17 +1,21 @@
-# Use an official OpenJDK runtime as a parent i
-FROM eclipse-temurin:17-jdk-alpine
+# syntax=docker/dockerfile:1.7
+FROM eclipse-temurin:21-jdk AS build
+WORKDIR /src
+COPY .mvn .mvn
+COPY mvnw pom.xml ./
+RUN chmod +x mvnw
+RUN --mount=type=cache,target=/root/.m2 ./mvnw -B -q dependency:go-offline
+COPY src src
+RUN --mount=type=cache,target=/root/.m2 ./mvnw -B -q package -DskipTests \
+    && java -Djarmode=tools -jar target/messenger-*.jar extract --layers --launcher --destination /layers
 
-# Set the working directory to /app
+FROM eclipse-temurin:21-jre
+RUN groupadd --system app && useradd --system --gid app --home /app app
 WORKDIR /app
-
-# Copy the current directory contents into the container at /app
-COPY target/messenger-app.jar /app
-
-# Expose port 8080
+COPY --from=build /layers/dependencies/ ./
+COPY --from=build /layers/spring-boot-loader/ ./
+COPY --from=build /layers/snapshot-dependencies/ ./
+COPY --from=build /layers/application/ ./
+USER app
 EXPOSE 8080
-
-# Define environment variable
-ENV JAVA_OPTS=""
-
-# Run the JAR file
-ENTRYPOINT ["sh", "-c", "java -jar messenger-app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "org.springframework.boot.loader.launch.JarLauncher"]
