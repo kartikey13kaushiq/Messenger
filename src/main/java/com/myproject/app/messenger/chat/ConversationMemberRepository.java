@@ -17,7 +17,11 @@ public interface ConversationMemberRepository extends JpaRepository<Conversation
             order by coalesce(c.lastMessageAt, c.createdAt) desc""")
     List<ConversationMember> findMembershipsOf(UUID userId);
 
-    @Query("select m from ConversationMember m join fetch m.user where m.conversation.id in :conversationIds order by m.joinedAt")
+    /** Owners first, then by join time; username breaks ties so the order is stable. */
+    @Query("""
+            select m from ConversationMember m join fetch m.user u
+            where m.conversation.id in :conversationIds
+            order by case when m.role = 'OWNER' then 0 else 1 end, m.joinedAt, u.username""")
     List<ConversationMember> findAllWithUsers(Collection<UUID> conversationIds);
 
     Optional<ConversationMember> findByConversationIdAndUserId(UUID conversationId, UUID userId);

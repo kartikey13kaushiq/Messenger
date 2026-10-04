@@ -157,7 +157,8 @@ public class ConversationService {
             return;
         }
         if (remaining.stream().noneMatch(m -> m.getRole() == MemberRole.OWNER)) {
-            remaining.stream().min(Comparator.comparing(ConversationMember::getJoinedAt))
+            remaining.stream().min(Comparator.comparing(ConversationMember::getJoinedAt)
+                            .thenComparing(m -> m.getUser().getUsername()))
                     .ifPresent(m -> m.setRole(MemberRole.OWNER));
         }
         events.publish(remaining.stream().map(m -> m.getUser().getUsername()).toList(),
